@@ -1,0 +1,21 @@
+# Caddy site for marcosbatistaochoa.com, installed as /etc/caddy/sites/site.caddy on dabox
+# by deploy/deploy.sh. Static files only; Caddy gets and renews the https certificate itself.
+# DNS at Cloudflare: A @ and A www -> dabox, "DNS only" (grey cloud).
+www.marcosbatistaochoa.com {
+	redir https://marcosbatistaochoa.com{uri} permanent
+}
+
+marcosbatistaochoa.com {
+	root * /srv/site/site
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Content-Security-Policy "default-src 'self'; style-src 'self' 'unsafe-inline'"
+		-Server
+	}
+	try_files {path} {path}.html
+	file_server
+}
